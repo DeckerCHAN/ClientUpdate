@@ -1,8 +1,15 @@
 package com.decker.clientupdate.core;
 
+import com.decker.clientupdate.core.client.ClientProxy;
+import com.decker.clientupdate.core.client.ClientType;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 /**
  *
@@ -12,7 +19,7 @@ public class Executor {
 
     File workFolder;
 
-    public Executor()  {
+    public Executor() {
 
     }
 
@@ -22,36 +29,40 @@ public class Executor {
         //parameter 1:target file
         //parameter 2:url
         String[] parameters = instruction.split(" ");
-        File targetFile=new File(parameters[1]);
+        File targetFile = new File(UpdateCore.getInstance().getCurrentFolderPath() + parameters[1]);
         switch (parameters[0]) {
             case "get": {
+                try {
+                    File tempFile = new File(UpdateCore.getInstance().getTempFolder() + "/" + targetFile.getName());
 
-//                Boolean conclusion;
-//                conclusion = NetworkClient.getInstance().downloadFileToTemp(parameters[1]);
-//                if (conclusion) {
-//                    Files.copy(UpdateCore.getInstance().getTempFolder().getAbsolutePath()+"\\"+parameters[1], null);
-//                    return String.format("[Success] Download file %s and put to %s", parameters[1], parameters[2]);
-//                } else {
-//                    return String.format("[Fault]Cant download file %s and put to %s", parameters[1], parameters[2]);
-//                }
-                
+                    if (targetFile.exists()) {
+                        targetFile.delete();
+                    }
 
+                    InputStream fileIS = new ClientProxy(ClientType.HttpClient).receiveToInputStream(parameters[2]);
+                    OutputStream fileOS = new FileOutputStream(tempFile);
+                    IOUtils.copy(fileIS,fileOS);
+                    fileIS.close();
+                    fileOS.close();
+                    FileUtils.moveFile(tempFile, targetFile);
+                    FileUtils.deleteQuietly(tempFile);
+                    return "[Success] " + instruction;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return "[Fault]" + e.getMessage();
+                }
             }
-            case "rm": {
-                if(targetFile.exists())
-                {
-                    Files.delete(targetFile.toPath());
+            case "remove": {
+                if (targetFile.exists()) {
+                    targetFile.delete();
+                } else {
+                    throw new FileNotFoundException("Can not find file " + targetFile.getName());
                 }
-                else
-                {
-                    throw new FileNotFoundException("Can not find file "+targetFile.getName());
-                }
-                break;
+                return "[Success] " + instruction;
             }
             default: {
                 return String.format("[Fault]Cant find command\"%s\"", parameters[0]);
             }
         }
-        return null;
     }
 }

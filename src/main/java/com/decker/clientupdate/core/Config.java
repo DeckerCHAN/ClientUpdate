@@ -67,7 +67,7 @@ public class Config {
     
     private Config() throws Exception {
         this.config = new HashMap<>();
-        this.ymlFile = new File("config.yml");
+        this.ymlFile = new File(UpdateCore.getInstance().getCurrentFolderPath()+"config.yml");
         if (!ymlFile.exists()) {
             ymlFile.createNewFile();
         } else {

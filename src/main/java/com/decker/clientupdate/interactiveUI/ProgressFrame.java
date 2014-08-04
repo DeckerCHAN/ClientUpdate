@@ -96,11 +96,7 @@ public void setProgressBarColor(Color color)
 
 public void  setProgress(Double value)
 {
-    this.progress.setValue((int) Math.round(value));
-}
-public void  setProgress(Integer value)
-{
-    this.progress.setValue(value);
+    this.progress.setValue((int) Math.round(value*100));
 }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel mainPanel;

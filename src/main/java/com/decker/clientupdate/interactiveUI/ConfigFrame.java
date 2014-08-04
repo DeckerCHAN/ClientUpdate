@@ -100,12 +100,10 @@ public class ConfigFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void confirmButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmButtonActionPerformed
-        try {
-            Window w = (Window) this;
-            w.getToolkit().getSystemEventQueue().postEvent(new WindowEvent(w, WindowEvent.WINDOW_CLOSING));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        Window w = (Window) this;
+        w.getToolkit().getSystemEventQueue().postEvent(new WindowEvent(w, WindowEvent.WINDOW_CLOSING));
+
 
     }//GEN-LAST:event_confirmButtonActionPerformed
 

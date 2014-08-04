@@ -1,19 +1,23 @@
 package com.decker.clientupdate.core;
 
+import com.decker.clientupdate.Loader;
 import com.decker.clientupdate.core.client.ClientProxy;
 import com.decker.clientupdate.core.client.ClientType;
 import com.decker.clientupdate.interactiveUI.ConfigFrame;
 import com.decker.clientupdate.interactiveUI.ProgressFrame;
+import com.decker.clientupdate.interactiveUI.ReportFrame;
 import com.decker.clientupdate.util.GUILauncher;
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import javax.swing.JFrame;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 /**
  *
  * @author decker
  */
-public class UpdateCore {
+public final class UpdateCore {
 
     public static UpdateCore instance;
 
@@ -24,23 +28,36 @@ public class UpdateCore {
         return instance;
     }
 
-    private File tempFolder;
-    ProgressFrame progressFrame;
+    private final File tempFolder;
+    private final File currentFolder;
+    private final String currentFolderPath;
+    private ProgressFrame progressFrame;
 
     public File getTempFolder() {
         return this.tempFolder;
     }
 
+    public String getCurrentFolderPath() {
+        return this.currentFolderPath;
+    }
+
     private UpdateCore() throws IOException {
-        //TODO:Generate temp folder
-        tempFolder = new File("temp");
-        if ((!tempFolder.exists())) {
+        //Get current work folder
+        this.currentFolder = new File(new File(UpdateCore.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getCanonicalPath());
+        this.currentFolderPath = currentFolder.getCanonicalPath() + "/";
+        //Generate temp folder
+        tempFolder = new File(this.currentFolderPath + "temp");
+        if (tempFolder.exists()) {
+            this.removeTempFolder();
             tempFolder.mkdir();
+        } else {
+            tempFolder.mkdir();
+
         }
     }
 
     public void process() throws Exception {
-
+        String updateResultReport = null;
         try {
             //Receive config if ilist is empty 
             if (Config.haveSuchConfig("ilist")) {
@@ -53,15 +70,23 @@ public class UpdateCore {
             }
             progressFrame = new ProgressFrame();
             GUILauncher.Launch(progressFrame);
-            String instructionList[] = new ClientProxy(ClientType.HttpClient).receiveToString(Config.getConfig("ilist")).split("\r");
+            String[] instructionList = new ClientProxy(ClientType.HttpClient).receiveToString(Config.getConfig("ilist")).split("\n");
             for (int i = 0; i < instructionList.length; i++) {
                 String instruction = instructionList[i];
-                this.ExecuteInstruction(instruction);
-                this.progressFrame.setProgress((i/instruction.length()));
+                String executeResult = this.ExecuteInstruction(instruction);
+                this.progressFrame.setStatus(executeResult);
+                this.progressFrame.setProgress(((double) (i + 1) / (double) instructionList.length));
             }
+            this.removeTempFolder();
+            updateResultReport = String.format("All update finished! %s instructions executed.", String.valueOf(instructionList.length));
         } catch (Exception e) {
-            this.progressFrame.setStatus(e.getMessage());
+            updateResultReport = String.format("At least one deadly error encountered! Please connect to server manager to report this:%s", ExceptionUtils.getStackTrace(e));
+
         }
+        this.progressFrame.dispose();
+        ReportFrame reportFrame = new ReportFrame();
+        reportFrame.setReport(updateResultReport);
+        GUILauncher.Run(reportFrame);
 
     }
 
@@ -74,9 +99,9 @@ public class UpdateCore {
         }
     }
 
-    public void ClearWorkspace() {
+    public void removeTempFolder() throws IOException {
         if (this.tempFolder.exists()) {
-            this.tempFolder.delete();
+            FileUtils.deleteQuietly(this.tempFolder);
         }
     }
 

@@ -32,6 +32,11 @@
             <version>2.4</version>
         </dependency>
         <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.3.4</version>
@@ -46,7 +51,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.decker.clientUpdate.Loader</mainClass>
+                            <mainClass>com.decker.clientupdate.Loader</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -11,7 +11,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>com.decker.clientUpdate.Loader</mainClass>
+              <mainClass>com.decker.clientupdate.Loader</mainClass>
             </manifest>
           </archive>
         </configuration>
