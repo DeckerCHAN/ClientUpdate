@@ -1,17 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.decker.clientupdate.util;
+package com.decker.clientupdate.core;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import org.apache.commons.io.FileUtils;
 import org.yaml.snakeyaml.Yaml;
@@ -37,6 +27,7 @@ public class Config {
         return instance;
     }
 
+    
     public static String getConfig(String configName) {
         return getInstance().config.get(configName);
     }
@@ -48,6 +39,13 @@ public class Config {
     public static void saveAllConfigToFile() throws IOException {
         getInstance().saveTofFile();
     }
+    
+    public static Boolean haveSuchConfig(String configName)
+    {
+       String val= getInstance().config.get(configName);
+       return (val==null||val.length()<=0);
+    }
+    
     private HashMap<String, String> config;
     private File ymlFile;
 
@@ -56,13 +54,22 @@ public class Config {
         FileUtils.writeStringToFile(ymlFile, stringToFile);
     }
 
+    public  Boolean checkComplete()
+    {
+        for (String conf : this.config.values()) {
+            if(conf==null||conf.length()<=0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     private Config() throws Exception {
         this.config = new HashMap<>();
         this.ymlFile = new File("config.yml");
         if (!ymlFile.exists()) {
             ymlFile.createNewFile();
-            this.config.put("server", null);
-            this.config.put("path", null);
         } else {
             String fileContent = FileUtils.readFileToString(ymlFile);
             this.config = (HashMap<String, String>) (new Yaml().load(fileContent));

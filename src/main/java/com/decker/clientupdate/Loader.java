@@ -1,6 +1,7 @@
 package com.decker.clientupdate;
 
-import com.decker.clientupdate.interactiveUI.MainFrame;
+import com.decker.clientupdate.core.UpdateCore;
+import com.decker.clientupdate.interactiveUI.ProgressFrame;
 import com.sun.org.apache.bcel.internal.generic.InstructionConstants;
 import com.sun.org.apache.xml.internal.utils.ThreadControllerWrapper;
 import java.awt.GridBagConstraints;
@@ -27,20 +28,12 @@ public class Loader {
 
     public static void main(String[] args) {
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new MainFrame().setVisible(true);
-                }
-            });
-
-           
+            UpdateCore.getInstance().process();
 
         } catch (Exception ex) {
+            ex.printStackTrace();
         }
-       
-        return;
+
     }
 }
