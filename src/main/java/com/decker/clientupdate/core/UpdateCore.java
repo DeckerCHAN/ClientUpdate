@@ -8,6 +8,7 @@ import com.decker.clientupdate.interactiveUI.ReportFrame;
 import com.decker.clientupdate.util.GUILauncher;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.nio.file.Path;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -41,7 +42,7 @@ public final class UpdateCore {
 
     private UpdateCore() throws IOException {
         //Get current work folder
-        this.currentFolder = new File(new File(UpdateCore.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getCanonicalPath());
+        this.currentFolder = new File(new File(URLDecoder.decode(UpdateCore.class.getProtectionDomain().getCodeSource().getLocation().getPath(),"UTF-8")).getParentFile().getCanonicalPath());
         //Generate temp folder
         tempFolder = this.currentFolder.toPath().resolve("temp").toFile();
         if (tempFolder.exists()) {

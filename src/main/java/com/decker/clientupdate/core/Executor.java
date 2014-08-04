@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -29,11 +28,11 @@ public class Executor {
         //parameter 1:target file
         //parameter 2:url
         String[] parameters = instruction.split(" ");
-        File targetFile = new File(UpdateCore.getInstance().getCurrentFolderPath() + parameters[1]);
+        File targetFile = UpdateCore.getInstance().getCurrentFolderPath().resolve(parameters[1]).toFile();
         switch (parameters[0]) {
             case "get": {
                 try {
-                    File tempFile = new File(UpdateCore.getInstance().getTempFolder() + "/" + targetFile.getName());
+                    File tempFile = UpdateCore.getInstance().getTempFolder().toPath().resolve(targetFile.getName()).toFile();
 
                     if (targetFile.exists()) {
                         targetFile.delete();
@@ -41,7 +40,7 @@ public class Executor {
 
                     InputStream fileIS = new ClientProxy(ClientType.HttpClient).receiveToInputStream(parameters[2]);
                     OutputStream fileOS = new FileOutputStream(tempFile);
-                    IOUtils.copy(fileIS,fileOS);
+                    IOUtils.copy(fileIS, fileOS);
                     fileIS.close();
                     fileOS.close();
                     FileUtils.moveFile(tempFile, targetFile);
