@@ -1,6 +1,5 @@
 package com.decker.clientupdate.core;
 
-import com.decker.clientupdate.Loader;
 import com.decker.clientupdate.core.client.ClientProxy;
 import com.decker.clientupdate.core.client.ClientType;
 import com.decker.clientupdate.interactiveUI.ConfigFrame;
@@ -9,7 +8,7 @@ import com.decker.clientupdate.interactiveUI.ReportFrame;
 import com.decker.clientupdate.util.GUILauncher;
 import java.io.File;
 import java.io.IOException;
-import javax.swing.JFrame;
+import java.nio.file.Path;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
@@ -30,23 +29,21 @@ public final class UpdateCore {
 
     private final File tempFolder;
     private final File currentFolder;
-    private final String currentFolderPath;
     private ProgressFrame progressFrame;
 
     public File getTempFolder() {
         return this.tempFolder;
     }
 
-    public String getCurrentFolderPath() {
-        return this.currentFolderPath;
+    public Path getCurrentFolderPath() {
+        return this.currentFolder.toPath();
     }
 
     private UpdateCore() throws IOException {
         //Get current work folder
         this.currentFolder = new File(new File(UpdateCore.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParentFile().getCanonicalPath());
-        this.currentFolderPath = currentFolder.getCanonicalPath() + "/";
         //Generate temp folder
-        tempFolder = new File(this.currentFolderPath + "temp");
+        tempFolder = this.currentFolder.toPath().resolve("temp").toFile();
         if (tempFolder.exists()) {
             this.removeTempFolder();
             tempFolder.mkdir();
