@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.decker</groupId>
     <artifactId>ClientUpdate</artifactId>
-    <version>1.4-ALPHA</version>
+    <version>1.5-BETA</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
