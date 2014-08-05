@@ -42,7 +42,7 @@ public final class UpdateCore {
 
     private UpdateCore() throws IOException {
         //Get current work folder
-        this.currentFolder = new File(new File(URLDecoder.decode(UpdateCore.class.getProtectionDomain().getCodeSource().getLocation().getPath(),"UTF-8")).getParentFile().getCanonicalPath());
+        this.currentFolder = new File(new File(URLDecoder.decode(UpdateCore.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8")).getParentFile().getCanonicalPath());
         //Generate temp folder
         tempFolder = this.currentFolder.toPath().resolve("temp").toFile();
         if (tempFolder.exists()) {
@@ -61,8 +61,11 @@ public final class UpdateCore {
             if (Config.haveSuchConfig("ilist")) {
                 ConfigFrame configFrame = new ConfigFrame();
                 GUILauncher.Run(configFrame);
-                System.out.println("Form finished! Result is" + configFrame.getIListUrl());
-                Config.setConfig("ilist", configFrame.getIListUrl().replaceAll("[^A-Za-z0-9\\.\\/]", ""));
+                if (configFrame.getIListUrl() == null || configFrame.getIListUrl().length() <= 0) {
+                    throw new IllegalArgumentException("Empty input");
+                } else {
+                    Config.setConfig("ilist", configFrame.getIListUrl());
+                }
                 Config.saveAllConfigToFile();
                 configFrame.dispose();
             }
@@ -76,12 +79,13 @@ public final class UpdateCore {
                 this.progressFrame.setProgress(((double) (i + 1) / (double) instructionList.length));
             }
             this.removeTempFolder();
+            this.progressFrame.dispose();
             updateResultReport = String.format("All update finished! %s instructions executed.", String.valueOf(instructionList.length));
         } catch (Exception e) {
             updateResultReport = String.format("At least one deadly error encountered! Please connect to server manager to report this:%s", ExceptionUtils.getStackTrace(e));
 
         }
-        this.progressFrame.dispose();
+
         ReportFrame reportFrame = new ReportFrame();
         reportFrame.setReport(updateResultReport);
         GUILauncher.Run(reportFrame);
