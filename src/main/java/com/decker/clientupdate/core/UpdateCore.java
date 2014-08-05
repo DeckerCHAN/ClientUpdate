@@ -62,7 +62,7 @@ public final class UpdateCore {
                 ConfigFrame configFrame = new ConfigFrame();
                 GUILauncher.Run(configFrame);
                 System.out.println("Form finished! Result is" + configFrame.getIListUrl());
-                Config.setConfig("ilist", configFrame.getIListUrl());
+                Config.setConfig("ilist", configFrame.getIListUrl().replaceAll("[^A-Za-z0-9\\.\\/]", ""));
                 Config.saveAllConfigToFile();
                 configFrame.dispose();
             }
