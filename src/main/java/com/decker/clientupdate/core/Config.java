@@ -73,6 +73,10 @@ public class Config {
         } else {
             String fileContent = FileUtils.readFileToString(ymlFile);
             this.config = (HashMap<String, String>) (new Yaml().load(fileContent));
+            if(this.config==null)
+            {
+                this.config=new HashMap<>();
+            }
         }
 
     }
