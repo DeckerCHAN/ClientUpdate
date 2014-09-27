@@ -20,6 +20,10 @@ public class ConfigFrame extends javax.swing.JFrame {
         return this.instructionListUrlField.getText();
     }
 
+    public void setIListUrl(String iListUrl) {
+        this.instructionListUrlField.setText(iListUrl);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -55,10 +59,10 @@ public class ConfigFrame extends javax.swing.JFrame {
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(mainPanelLayout.createSequentialGroup()
-                .addContainerGap(55, Short.MAX_VALUE)
+                .addContainerGap(38, Short.MAX_VALUE)
                 .add(mainPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, mainPanelLayout.createSequentialGroup()
-                        .add(instructionListUrlFIxLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 80, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(instructionListUrlFIxLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 107, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(instructionListUrlField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 364, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(86, 86, 86))
@@ -95,7 +99,7 @@ public class ConfigFrame extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        setSize(new java.awt.Dimension(641, 181));
+        setSize(new java.awt.Dimension(681, 200));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 

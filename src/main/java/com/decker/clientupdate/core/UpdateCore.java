@@ -58,17 +58,20 @@ public final class UpdateCore {
         String updateResultReport = null;
         try {
             //Receive config if ilist is empty 
+            ConfigFrame configFrame = new ConfigFrame();
             if (Config.haveSuchConfig("ilist")) {
-                ConfigFrame configFrame = new ConfigFrame();
-                GUILauncher.Run(configFrame);
-                if (configFrame.getIListUrl() == null || configFrame.getIListUrl().length() <= 0) {
-                    throw new IllegalArgumentException("Empty input");
-                } else {
-                    Config.setConfig("ilist", configFrame.getIListUrl());
-                }
-                Config.saveAllConfigToFile();
-                configFrame.dispose();
+                configFrame.setIListUrl(Config.getConfig("ilist"));
             }
+            GUILauncher.Run(configFrame);
+            if (configFrame.getIListUrl() == null || configFrame.getIListUrl().length() <= 0) {
+                throw new IllegalArgumentException("Empty input");
+            } else {
+                Config.setConfig("ilist", configFrame.getIListUrl());
+            }
+            Config.saveAllConfigToFile();
+            configFrame.dispose();
+
+            //pop up progress window
             progressFrame = new ProgressFrame();
             GUILauncher.Launch(progressFrame);
             String[] instructionList = new ClientProxy(ClientType.HttpClient).receiveToString(Config.getConfig("ilist")).split("\n");

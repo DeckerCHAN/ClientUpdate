@@ -43,7 +43,7 @@ public class Config {
     public static Boolean haveSuchConfig(String configName)
     {
        String val= getInstance().config.get(configName);
-       return (val==null||val.length()<=0);
+       return !(val==null||val.length()<=0);
     }
     
     private HashMap<String, String> config;
@@ -53,7 +53,7 @@ public class Config {
         String stringToFile = (String) (new Yaml().dump(this.config));
         FileUtils.writeStringToFile(ymlFile, stringToFile);
     }
-
+    
     public  Boolean checkComplete()
     {
         for (String conf : this.config.values()) {
