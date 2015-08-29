@@ -2,42 +2,24 @@ package com.decker.clientupdate.core;
 
 import com.decker.clientupdate.core.client.ClientProxy;
 import com.decker.clientupdate.core.client.ClientType;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-/**
- *
- * @author decker
- */
+import java.io.*;
+
 public class Executor {
 
-    File workFolder;
-
-    public Executor() {
-
-    }
-
-    public String execute(String instruction) throws Exception {
-
-        //parameter 0:command
-        //parameter 1:target file
-        //parameter 2:url
+    public String execute(String instruction)
+            throws Exception {
         String[] parameters = instruction.split(" ");
-        File targetFile = UpdateCore.getInstance().getCurrentFolderPath().resolve(parameters[1]).toFile();
+        File targetFile = UpdateCore.getInstance().getCurrentFolderPath().resolve(java.net.URLDecoder.decode(parameters[1], "UTF-8")).toFile();
         switch (parameters[0]) {
-            case "get": {
+            case "get":
                 try {
                     File tempFile = UpdateCore.getInstance().getTempFolder().toPath().resolve(targetFile.getName()).toFile();
-
                     if (targetFile.exists()) {
                         targetFile.delete();
                     }
-
                     InputStream fileIS = new ClientProxy(ClientType.HttpClient).receiveToInputStream(parameters[2]);
                     OutputStream fileOS = new FileOutputStream(tempFile);
                     IOUtils.copy(fileIS, fileOS);
@@ -50,18 +32,15 @@ public class Executor {
                     e.printStackTrace();
                     return "[Fault]" + e.getMessage();
                 }
-            }
-            case "remove": {
+            case "remove":
                 if (targetFile.exists()) {
                     targetFile.delete();
                 } else {
                     throw new FileNotFoundException("Can not find file " + targetFile.getName());
                 }
                 return "[Success] " + instruction;
-            }
-            default: {
-                return String.format("[Fault]Cant find command\"%s\"", parameters[0]);
-            }
         }
+        return String.format("[Fault]Cant find command\"%s\"", new Object[]{parameters[0]});
     }
 }
+

@@ -1,53 +1,49 @@
 package com.decker.clientupdate.core.client;
 
 import com.decker.clientupdate.core.Config;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 
-/**
- *
- * @author decker
- */
-  class FtpClient extends FTPClient implements Client{
+import java.io.IOException;
+import java.io.InputStream;
 
+class FtpClient
+        extends FTPClient
+        implements Client {
     private static FtpClient instance;
+    FTPClient client;
+    String server;
+    String port;
+    String path;
 
-    public static FtpClient getInstance() throws IOException {
+    public static FtpClient getInstance()
+            throws IOException {
         if (instance == null) {
             instance = new FtpClient();
         }
         return instance;
     }
 
-    FTPClient client;
-    String server;
-    String port;
-    String path;
-
-    FtpClient() throws IOException {
+    FtpClient()
+            throws IOException {
         this.client = new FTPClient();
-        this.server = Config.getConfig(server);
+        this.server = Config.getConfig(this.server);
         this.port = "21";
-        this.path = Config.getConfig(path);
-
+        this.path = Config.getConfig(this.path);
     }
 
-    private void connectToServer() throws IOException {
-        this.client.connect(server, Integer.valueOf(port));
+    private void connectToServer()
+            throws IOException {
+        this.client.connect(this.server, Integer.valueOf(this.port).intValue());
         this.client.login("anonymous", "");
         this.client.enterLocalPassiveMode();
-        this.client.setFileType(FTP.BINARY_FILE_TYPE);
+        this.client.setFileType(2);
         if (this.client.isConnected()) {
-            System.out.println(String.format("Successful connected to %s",
-                    Config.getConfig("Server")));
+            System.out.println(String.format("Successful connected to %s", new Object[]{Config.getConfig("Server")}));
         } else {
-            System.out.println(String.format(
-                    "Unsuccessful connected to %s.....Terminated!",
-                    Config.getConfig("Server")));
+            System.out.println(String.format("Unsuccessful connected to %s.....Terminated!", new Object[]{Config.getConfig("Server")}));
+
+
             return;
         }
         System.out.println("Remote system is " + this.client.getSystemType());
@@ -55,9 +51,10 @@ import org.apache.commons.net.ftp.FTPFile;
         System.out.println("Changing remote folder.......Current directory is " + this.client.printWorkingDirectory());
     }
 
-    public Boolean checkRemoteExists(String fileName) throws IOException {
+    public Boolean checkRemoteExists(String fileName)
+            throws IOException {
         if (!this.client.isConnected()) {
-            this.connectToServer();
+            connectToServer();
         }
         FTPFile[] ftpFiles = this.client.listFiles();
         for (FTPFile fTPFile : ftpFiles) {
@@ -68,32 +65,13 @@ import org.apache.commons.net.ftp.FTPFile;
         return false;
     }
 
-    public Boolean downloadFile(String url,String targetPath) throws IOException {
-        //Check target file exists
-//        File tempFile=new File(putFolder.getAbsolutePath()+"\\"+fileName);
-//        if(tempFile.exists()){
-//            Files.delete(targetFile.getAbsolutePath());
-//        }
-//        targetFile.createNewFile();
-//        //Check is connect
-//        if (!this.client.isConnected()) {
-//            this.connectToServer();
-//        }
-//        //Check remote file exists
-//        if (this.checkRemoteExists(fileName)) {
-//            OutputStream output = new FileOutputStream(tempFile);
-//            this.client.retrieveFile(fileName, output);
-//            return true;
-//        }
-        
+    public Boolean downloadFile(String url, String targetPath)
+            throws IOException {
         return false;
-
     }
 
-    @Override
-    public InputStream download(String url) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public InputStream download(String url)
+            throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
-
-
 }
