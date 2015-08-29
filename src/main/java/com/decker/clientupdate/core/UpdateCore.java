@@ -77,7 +77,7 @@ public final class UpdateCore {
             String[] instructionList = new ClientProxy(ClientType.HttpClient).receiveToString(Config.getConfig("ilist")).split("\n");
             for (int i = 0; i < instructionList.length; i++) {
                 String instruction = instructionList[i];
-                String executeResult = this.ExecuteInstruction(instruction);
+                String executeResult = this.executeInstruction(instruction);
                 this.progressFrame.setStatus(executeResult);
                 this.progressFrame.setProgress(((double) (i + 1) / (double) instructionList.length));
             }
@@ -95,7 +95,7 @@ public final class UpdateCore {
 
     }
 
-    public String ExecuteInstruction(String instruction) {
+    public String executeInstruction(String instruction) {
 
         try {
             return new Executor().execute(instruction);
